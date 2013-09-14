@@ -16,7 +16,6 @@ module Plotting (Color (Color),
                  Position (Position),
                  Shape (..),
                  display) where
-import Control.Monad (forM_)
 import Foreign.C.Types (CDouble (CDouble))
 
 import Graphics.Rendering.OpenGL (ClearBuffer (ColorBuffer),
@@ -24,7 +23,6 @@ import Graphics.Rendering.OpenGL (ClearBuffer (ColorBuffer),
                                   PrimitiveMode (Lines, TriangleFan, Quads),
                                   clear,
                                   color,
-                                  flush,
                                   loadIdentity,
                                   preservingMatrix,
                                   renderPrimitive,
@@ -81,24 +79,24 @@ display :: String -- ^ The desired window title.
            -> Plot -- ^ A Plot to draw in the window.
            -> IO ()
 display title plot = do
-  getArgsAndInitialize
+  _ <- getArgsAndInitialize
   initialDisplayMode $= [DoubleBuffered]
-  createWindow title
-  displayCallback $= displayFunction plot
+  _ <- createWindow title
+  displayCallback $= displayFunction
   mainLoop
   where
     renderables = whiteBackground : map makeRenderable plot
-    displayFunction :: Plot -> IO ()
-    displayFunction plot = do
+    displayFunction :: IO ()
+    displayFunction = do
       clear [ColorBuffer]
       loadIdentity
       preservingMatrix (mapM_ render renderables)
       swapBuffers
 
 whiteBackground :: Renderable
-whiteBackground = Renderable Quads color vertices
+whiteBackground = Renderable Quads c vertices
   where
     one         = 1 :: CDouble
-    color = Color3 one one one
+    c = Color3 one one one
     coordinates = [(one, -one), (-one, -one), (-one, one), (one, one)]
     vertices = map (uncurry Vertex2) coordinates

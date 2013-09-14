@@ -19,11 +19,9 @@ module Perceptron (StoppingCriterion (..),
 import Control.Arrow (first)
 import Foreign.Marshal.Utils (fromBool)
 
-import Learning (ClassifiedSample,
-                 BinaryClassifier,
-                 Sample)
-import Utils (dot,
-              normalize)
+import Learning (BinaryClassifier,
+                 ClassifiedSample)
+import Utils (dot)
 
 -- | The condition we need to satisfy to stop the training algorithm.
 data StoppingCriterion = Iterations Int -- ^ An upper bound on the number of
@@ -37,7 +35,7 @@ data StoppingCriterion = Iterations Int -- ^ An upper bound on the number of
 vectorToClassifier :: [Double] -- ^ The vector resulting from the
                                -- perceptron learning algorithm.
                       -> BinaryClassifier -- ^ A perceptron classifier.
-vectorToClassifier w = (>= 0) . dot w
+vectorToClassifier w = (>= 0) . dot w . (1 :)
 
 -- | Given a list of classified samples, we construct a vector w such that a
 -- point x in R^n is accepted if w `dot` x > 0. This defines a hyperplane that
@@ -57,7 +55,7 @@ train alpha criterion samples = go 0 w_1
                     Iterations t | t == k -> w'
                     InSampleError e | err <= e -> w'
                       where
-                        err = sampleError (vectorToClassifier w') samples'
+                        err = sampleError (vectorToClassifier w') samples
                     _ -> go (k + 1) w'
 
 prepareTrainingData :: [ClassifiedSample] -> [ClassifiedSample]

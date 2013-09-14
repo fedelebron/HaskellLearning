@@ -19,4 +19,4 @@ dot = (sum .) . zipWith (*)
 normalize :: Floating a => [a] -> [a]
 normalize xs = map (/ norm) xs
   where
-    norm = sqrt . sum $ map (^ 2) xs
+    norm = sqrt . sum $ map (** 2) xs
