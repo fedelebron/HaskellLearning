@@ -97,6 +97,6 @@ whiteBackground :: Renderable
 whiteBackground = Renderable Quads c vertices
   where
     one         = 1 :: CDouble
-    c = Color3 one one one
+    c           = Color3 one one one
     coordinates = [(one, -one), (-one, -one), (-one, one), (one, one)]
-    vertices = map (uncurry Vertex2) coordinates
+    vertices    = map (uncurry Vertex2) coordinates

@@ -63,7 +63,7 @@ prepareTrainingData = map $ first (1 :)
 
 -- | Computes the sample error, using the euclidean 1-norm.
 sampleError :: BinaryClassifier -> [ClassifiedSample] -> Double
-sampleError f samples = sum $ map g samples
+sampleError f = sum . map g
   where
     g (s, b) = abs $ fromBool (f s) - fromBool b
 
